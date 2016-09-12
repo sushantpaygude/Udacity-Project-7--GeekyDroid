@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.sushant.udacityproject7_booksapi.MainActivity"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+    <!--App Search Layout-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/text_query"
+            android:hint="Search me"
+            android:background="@color/colorAccent"
+            android:textStyle="italic"
+            android:textCursorDrawable="@null"
+            android:padding="5dp"
+            android:textColorHint="@color/colorPrimary"/>
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icon_search"
+            android:layout_alignParentRight="true"
+            android:id="@+id/button_search"
+            android:layout_margin="5dp"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--Starting Logo and Title-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_start"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:layout_gravity="center"
+                android:id="@+id/text_title"
+                android:textSize="50sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/image_books"
+                android:id="@+id/image_main"/>
+        </LinearLayout>
+
+        <!--Listview of Cards-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_results"
+            android:textSize="25sp"
+            android:layout_margin="5dp"
+            android:textStyle="italic"/>
+
+            <ListView android:id="@+id/card_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:listSelector="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/colorPrimary"
+            android:dividerHeight="2dp"
+            android:clickable="true"
+            android:visibility="invisible"
+            android:background="@color/colorAccent"/>
+        </LinearLayout>
+
+    </FrameLayout>
+</LinearLayout>
