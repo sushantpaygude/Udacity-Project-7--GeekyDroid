@@ -213,19 +213,19 @@ public class MainActivity extends AppCompatActivity {
                         for(int j=0;j<itemArray.length();j++)
                         {
 
-                        JSONObject firstBook=itemArray.getJSONObject(j);
-                        JSONObject volumeInfo=firstBook.getJSONObject("volumeInfo");
-                        String book_title=volumeInfo.getString("title");
-                        String book_subtitle=volumeInfo.getString("publisher");
-                        JSONArray authorArray=volumeInfo.getJSONArray("authors");
+                        JSONObject objectBook=itemArray.getJSONObject(j);
+                        JSONObject volumeInfo=objectBook.getJSONObject("volumeInfo");
+                        String book_title=volumeInfo.optString("title");
+                        String book_publisher=volumeInfo.optString("publisher");
+                        JSONArray authorArray=volumeInfo.optJSONArray("authors");
 
                             for (int i=0;i<authorArray.length();i++) {
                                 book_author.add(authorArray.getString(i));
                             }
 
                         JSONObject imageLinks=volumeInfo.getJSONObject("imageLinks");
-                        String book_thumbnail=imageLinks.getString("thumbnail");
-                        bookDetails=new BookDetails(book_title,book_subtitle,book_author,book_thumbnail);
+                        String book_thumbnail=imageLinks.optString("thumbnail");
+                        bookDetails=new BookDetails(book_title,book_publisher,book_author,book_thumbnail);
                         bookDetailsArray.add(bookDetails);
                         }
                 }
