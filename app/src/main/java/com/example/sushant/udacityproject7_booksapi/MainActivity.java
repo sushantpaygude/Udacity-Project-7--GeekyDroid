@@ -1,6 +1,9 @@
 package com.example.sushant.udacityproject7_booksapi;
 
+import android.content.Context;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textTitle;
     TextView textResults;
     CardView cardView;
+    Boolean networkConnection=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,25 +85,25 @@ public class MainActivity extends AppCompatActivity {
             BOOK_REQUEST_URL=BOOK_REQUEST_URL.replaceAll("\\s","");
             URL url=createURLObject(BOOK_REQUEST_URL);
             String jsonResponse="";
-            try{
-                jsonResponse=makeHTTPRequest(url);
+           ArrayList<BookDetails> bookDetailsArray=null;
+            networkConnection=isNetworkAvailable();
+            if(networkConnection==true) {
+                try {
+                    jsonResponse = makeHTTPRequest(url);
+                } catch (IOException e) {
+                    Log.e("EXCEPTION:", "" + e);
+                }
+                bookDetailsArray = extractBookDetails(jsonResponse);
             }
-            catch (IOException e)
-            {
-                Log.e("EXCEPTION:",""+e);
-            }
-            ArrayList<BookDetails> bookDetailsArray=extractBookDetails(jsonResponse);
             return bookDetailsArray;
+
         }
 
         @Override
         protected void onPostExecute(ArrayList<BookDetails> bookDetailsArray) {
-            if(bookDetailsArray==null)
-            {
-                return;
-            }
 
-                    UpdateUI(bookDetailsArray);
+                UpdateUI(bookDetailsArray);
+
 
         }
 
@@ -110,16 +114,21 @@ public class MainActivity extends AppCompatActivity {
             cardAdapter=new CustomCardAdapter(getApplicationContext(),R.layout.list_item_card);
             textResults=(TextView)findViewById(R.id.text_results);
 
-            for(int i=0;i<bookDetails.size();i++) {
-                cardAdapter.add(bookDetails.get(i));
-            }
-            listView.setAdapter(cardAdapter);
-            if(listView.getCount()==0)
+           if(bookDetails!=null) {
+               for (int i = 0; i < bookDetails.size(); i++) {
+                   cardAdapter.add(bookDetails.get(i));
+               }
+               listView.setAdapter(cardAdapter);
+               if (listView.getCount() == 0) {
+                   textResults.setText("No match found");
+               } else {
+                   textResults.setText("Found " + listView.getCount() + " matches:");
+               }
+           }
+
+            if(networkConnection==false)
             {
-                textResults.setText("No match found");
-            }
-            else{
-                textResults.setText("Found "+listView.getCount()+" matches:");
+                textResults.setText("No Internet Connection.");
             }
         }
 
@@ -143,13 +152,14 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection urlConnection=null;
 
             try{
-                urlConnection=(HttpURLConnection)url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setReadTimeout(10000);
-                urlConnection.setConnectTimeout(15000);
-                urlConnection.connect();
-                inputStream=urlConnection.getInputStream();
-                jsonResponse=readFromStream(inputStream);
+
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setReadTimeout(10000);
+                    urlConnection.setConnectTimeout(15000);
+                    urlConnection.connect();
+                    inputStream = urlConnection.getInputStream();
+                    jsonResponse = readFromStream(inputStream);
             }
             catch (IOException e){
                 Log.e("URL Connection Failed:",""+e);
@@ -225,6 +235,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("", "Problem parsing the book JSON results", e);
             }
            return bookDetailsArray;
+        }
+
+        private boolean isNetworkAvailable() {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+            if(activeNetworkInfo!=null) {
+                Log.e("NETWORK INFO", "" + activeNetworkInfo.toString());
+            }
+            return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+
         }
     }
 }
